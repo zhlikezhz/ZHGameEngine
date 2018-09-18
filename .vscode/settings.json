@@ -9,6 +9,7 @@
         "**/build": true,
     },
     "files.associations": {
-        "__locale": "cpp"
+        "__locale": "cpp",
+        "xlocale": "cpp"
     }
 }

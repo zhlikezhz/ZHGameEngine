@@ -1,0 +1,2 @@
+add_executable(ZHGameEngine WindowsApplication.cpp)
+target_link_libraries(ZHGameEngine Common)
