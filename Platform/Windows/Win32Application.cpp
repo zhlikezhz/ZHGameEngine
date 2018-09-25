@@ -64,6 +64,12 @@ LRESULT CALLBACK Win32Application::WindowProc(HWND hWnd, UINT message, WPARAM wP
     {
     case WM_PAINT:
         {
+            PAINTSTRUCT ps;
+            HDC hdc = BeginPaint(hWnd, &ps);
+            RECT rec = {20, 20, 60, 80};
+            HBRUSH brush = (HBRUSH) GetStockObject(BLACK_BRUSH);
+            FillRect(hdc, &rec, brush);
+            EndPaint(hWnd, &ps);
         } 
         break;
     case WM_DESTROY:

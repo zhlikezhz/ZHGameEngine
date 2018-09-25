@@ -3,7 +3,7 @@
 
 namespace ZH
 {
-    Interface IRuntimeModule 
+    class IRuntimeModule 
     {
         public:
             virtual ~IRuntimeModule() {};

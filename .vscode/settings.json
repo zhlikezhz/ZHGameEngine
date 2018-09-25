@@ -10,6 +10,9 @@
     },
     "files.associations": {
         "__locale": "cpp",
-        "xlocale": "cpp"
+        "xlocale": "cpp",
+        "ios": "cpp",
+        "xiosbase": "cpp",
+        "*.rh": "cpp"
     }
 }

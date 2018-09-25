@@ -5,7 +5,7 @@
 
 namespace ZH
 {
-    Interface IApplication : implements IRuntimeModule
+    class IApplication : public IRuntimeModule
     {
         public:
             virtual int Initialize() = 0;
