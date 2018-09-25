@@ -1,5 +1,6 @@
 #include <cstdio>
-#include "../Interface/IApplication.hpp"
+#include "Platform.h"
+#include "IApplication.hpp"
 using namespace ZH;
 
 namespace ZH
