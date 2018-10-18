@@ -36,7 +36,7 @@ int WindowsApplication::Initialize()
     wc.hInstance = hInstance;
     wc.hCursor = LoadCursor(NULL, IDC_ARROW);
     wc.hbrBackground = (HBRUSH)COLOR_WINDOW;
-    wc.lpszClassName = "GameEngineFromScratch";
+    wc.lpszClassName = L"GameEngineFromScratch";
 
     // register the window class
     RegisterClassEx(&wc);

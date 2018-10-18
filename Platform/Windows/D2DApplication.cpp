@@ -13,7 +13,6 @@ namespace ZH
     ID2D1SolidColorBrush    *pLightSlateGrayBrush = nullptr;
 }
 
-
 template<class T> void SafeRelease(T **ppInterfaceToRelease)
 {
     if (*ppInterfaceToRelease != nullptr)
@@ -126,7 +125,7 @@ LRESULT CALLBACK D2DApplication::WindowProc(HWND hWnd, UINT message, WPARAM wPar
         {
             if (FAILED(D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &pFactory)))
             {
-                    return -1;
+                return -1;
             }
         }
         break;
