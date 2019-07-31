@@ -5,10 +5,10 @@
 
 namespace ZH
 {
-    class OpenGLApplication: public BaseApplication
+    class GLApplication: public BaseApplication
     {
         public:
-            OpenGLApplication(GfxConfiguration &config)
+            GLApplication(GfxConfiguration &config)
                 : BaseApplication(config) { }
             
             virtual int Initialize();

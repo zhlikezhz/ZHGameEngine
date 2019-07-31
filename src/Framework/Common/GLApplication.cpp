@@ -1,4 +1,4 @@
-#include "OpenGLApplication.hpp"
+#include "GLApplication.hpp"
 #include <iostream>
 using namespace ZH;
 
@@ -11,7 +11,7 @@ namespace ZH
 }
 
 
-int OpenGLApplication::Initialize()
+int GLApplication::Initialize()
 {
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -41,12 +41,12 @@ int OpenGLApplication::Initialize()
     return 0;
 }
 
-void OpenGLApplication::Finalize()
+void GLApplication::Finalize()
 {
     glfwTerminate();
 }
 
-void OpenGLApplication::Tick()
+void GLApplication::Tick()
 {
     if (glfwWindowShouldClose(m_pWin)) {
         m_bQuit = true;

@@ -1,5 +1,7 @@
 add_library(Common
-OpenGLApplication.cpp
+GLShaderProgram.cpp
+GLApplication.cpp
 BaseApplication.cpp
+Image.cpp
 main.cpp
 )

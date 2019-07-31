@@ -1,13 +1,13 @@
 #pragma once
-#include "OpenGLApplication.hpp"
+#include "GLApplication.hpp"
 
 namespace ZH
 {
-    class MacGLApplication : public OpenGLApplication
+    class MacGLApplication : public GLApplication
     {
         public:
             MacGLApplication(GfxConfiguration &config)
-                : OpenGLApplication(config) { }
+                : GLApplication(config) { }
             
     };
 }
