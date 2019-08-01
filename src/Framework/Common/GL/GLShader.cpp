@@ -1,4 +1,4 @@
-#include "GLShaderProgram.hpp"
+#include "GLShader.hpp"
 #include "glad/glad.h"
 #include <iostream>
 #include <sstream>
@@ -6,26 +6,26 @@
 #include <string>
 using namespace ZH;
 
-GLShaderProgram::GLShaderProgram()
+GLShader::GLShader()
 :m_uShaderProgramID(0)
 {
 
 }
 
-GLShaderProgram::~GLShaderProgram()
+GLShader::~GLShader()
 {
     if (m_uShaderProgramID > 0) {
         glDeleteProgram(m_uShaderProgramID);
     }
 }
 
-GLShaderProgram* GLShaderProgram::createFromFile(const char* vertexFile, const char* fragmentFile)
+GLShader* GLShader::createFromFile(const char* vertexFile, const char* fragmentFile)
 {
-    GLShaderProgram* program = new GLShaderProgram();
+    GLShader* program = new GLShader();
 
     char* vBuff = nullptr;
     char* fBuff = nullptr;
-    if (program->loadFromFile(vertexFile, vBuff) && program->loadFromFile(fragmentFile, fBuff)) {
+    if (program->loadFromFile(vertexFile, &vBuff) && program->loadFromFile(fragmentFile, &fBuff)) {
         if (program->build(vBuff, fBuff)) {
             if (vBuff != nullptr) delete [] vBuff;
             if (fBuff != nullptr) delete [] fBuff;
@@ -38,9 +38,9 @@ GLShaderProgram* GLShaderProgram::createFromFile(const char* vertexFile, const c
     return nullptr;
 }
 
-GLShaderProgram* GLShaderProgram::createFromMemory(const char* vBuff, const char* fBuff)
+GLShader* GLShader::createFromMemory(const char* vBuff, const char* fBuff)
 {
-    GLShaderProgram* program = new GLShaderProgram();
+    GLShader* program = new GLShader();
     if (program->build(vBuff, fBuff)) {
         return program;
     }
@@ -48,7 +48,7 @@ GLShaderProgram* GLShaderProgram::createFromMemory(const char* vBuff, const char
     return nullptr;
 }
 
-bool GLShaderProgram::build(const char* vBuff, const char* fBuff)
+bool GLShader::build(const char* vBuff, const char* fBuff)
 {
     int status;
     char infoLog[512];
@@ -97,7 +97,7 @@ bool GLShaderProgram::build(const char* vBuff, const char* fBuff)
     return true;
 }
 
-bool GLShaderProgram::loadFromFile(const char* filePath, char* buffer)
+bool GLShader::loadFromFile(const char* filePath, char** buffer)
 {
     std::string code;
     std::ifstream shaderFile;
@@ -110,39 +110,40 @@ bool GLShaderProgram::loadFromFile(const char* filePath, char* buffer)
         code = strStream.str();
     } catch(std::ifstream::failure e) {
         std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
+        return false;
     }
     int num = strlen(code.c_str()) + 1;
-    buffer = new char[num];
-    memcpy(buffer, code.c_str(), num);
+    *buffer = new char[num];
+    memcpy(*buffer, code.c_str(), num);
     return true;
 }
 
-void GLShaderProgram::use()
+void GLShader::use()
 {
     glUseProgram(m_uShaderProgramID);
 }
 
-void GLShaderProgram::setb(const char* name, bool value)
+void GLShader::setb(const char* name, bool value)
 {
     glUniform1i(glGetUniformLocation(m_uShaderProgramID, name), (int)value);
 }
 
-void GLShaderProgram::seti(const char* name, int value)
+void GLShader::seti(const char* name, int value)
 {
     glUniform1i(glGetUniformLocation(m_uShaderProgramID, name), (int)value);
 }
 
-void GLShaderProgram::setui(const char* name, unsigned int value)
+void GLShader::setui(const char* name, unsigned int value)
 {
     glUniform1ui(glGetUniformLocation(m_uShaderProgramID, name), value);
 }
 
-void GLShaderProgram::setf(const char* name, float value)
+void GLShader::setf(const char* name, float value)
 {
     glUniform1f(glGetUniformLocation(m_uShaderProgramID, name), value);
 }
 
-void GLShaderProgram::set3f(const char* name, float value1, float value2, float value3)
+void GLShader::set3f(const char* name, float value1, float value2, float value3)
 {
     glUniform3f(glGetUniformLocation(m_uShaderProgramID, name), value1, value2, value3);
 }

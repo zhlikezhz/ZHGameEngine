@@ -1,5 +1,6 @@
 #pragma once
-#include "GLApplication.hpp"
+#include "GL/GLApplication.hpp"
+#include "RenderManager.hpp"
 
 namespace ZH
 {
@@ -7,7 +8,14 @@ namespace ZH
     {
         public:
             MacGLApplication(GfxConfiguration &config)
-                : GLApplication(config) { }
+                : GLApplication(config) {}
             
+            virtual int Initialize();
+
+        protected:
+            virtual void OnDraw();
+
+        private:
+            RenderManager m_renderManager;
     };
 }

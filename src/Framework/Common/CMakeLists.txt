@@ -1,7 +1,13 @@
+include_directories("${PROJECT_SOURCE_DIR}/src/Framework/Common/GL")
 add_library(Common
-GLShaderProgram.cpp
-GLApplication.cpp
+GL/GLShader.cpp 
+GL/GLApplication.cpp
+GL/GLRender.cpp
+Render.cpp
+Material.cpp
+Mesh.cpp
+RenderManager.cpp
 BaseApplication.cpp
-Image.cpp
+Texture.cpp
 main.cpp
 )

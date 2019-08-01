@@ -13,6 +13,18 @@
         "xlocale": "cpp",
         "ios": "cpp",
         "xiosbase": "cpp",
-        "*.rh": "cpp"
+        "*.rh": "cpp",
+        "__config": "cpp",
+        "__nullptr": "cpp",
+        "vector": "cpp",
+        "cstddef": "cpp",
+        "exception": "cpp",
+        "initializer_list": "cpp",
+        "new": "cpp",
+        "stdexcept": "cpp",
+        "type_traits": "cpp",
+        "typeinfo": "cpp",
+        "algorithm": "cpp",
+        "ratio": "cpp"
     }
 }

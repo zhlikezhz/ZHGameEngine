@@ -1,8 +1,8 @@
-#include "Image.hpp"
+#include "Texture.hpp"
 #include "image/lib_image.h"
 using namespace ZH;
 
-Image::Image()
+Texture::Texture()
 :m_iWidth(0),
 m_iHeight(0),
 m_iChannels(0),
@@ -11,14 +11,14 @@ m_pTextrueData(nullptr)
 
 }
 
-Image::~Image()
+Texture::~Texture()
 {
     unloadImage();
 }
 
-Image* Image::createImageFromFile(const char* filePath)
+Texture* Texture::createTextureFromFile(const char* filePath)
 {
-    Image* image = new Image;
+    Texture* image = new Texture;
     if (image->loadImage(filePath)) {
         return image;
     }
@@ -26,13 +26,13 @@ Image* Image::createImageFromFile(const char* filePath)
     return nullptr;
 }
 
-bool Image::loadImage(const char* filePath)
+bool Texture::loadImage(const char* filePath)
 {
     m_pTextrueData = stbi_load(filePath, &m_iWidth, &m_iHeight, &m_iChannels, 0);
     return true;
 }
 
-void Image::unloadImage()
+void Texture::unloadImage()
 {
     stbi_image_free(m_pTextrueData);
 }

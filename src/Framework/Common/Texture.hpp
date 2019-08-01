@@ -2,10 +2,10 @@
 
 namespace ZH
 {
-    class Image
+    class Texture 
     {
         public:
-            static Image* createImageFromFile(const char* filePath);
+            static Texture* createTextureFromFile(const char* filePath);
 
             inline int getWidth() { return m_iWidth; }
             inline int getHeight() { return m_iHeight; }
@@ -17,8 +17,8 @@ namespace ZH
             void unloadImage();
 
         private:
-            Image();
-            ~Image();
+            Texture();
+            ~Texture();
 
         private:
             int m_iWidth;

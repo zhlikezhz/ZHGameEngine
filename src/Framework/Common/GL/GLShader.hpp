@@ -1,12 +1,16 @@
 #pragma once
+#include "Shader.hpp"
 
 namespace ZH
 {
-    class GLShaderProgram
+    class GLShader : public Shader
     {
         public:
-            static GLShaderProgram* createFromFile(const char* , const char* );
-            static GLShaderProgram* createFromMemory(const char* , const char* );
+            GLShader();
+            ~GLShader();
+
+            static GLShader* createFromFile(const char* , const char* );
+            static GLShader* createFromMemory(const char* , const char* );
 
             void use();
             void setb(const char* name, bool val);
@@ -19,10 +23,8 @@ namespace ZH
             unsigned int m_uShaderProgramID;
 
         private:
-            GLShaderProgram();
-            ~GLShaderProgram();
 
             bool build(const char* , const char* );
-            bool loadFromFile(const char* , char* );
+            bool loadFromFile(const char* , char** );
     };
 }
