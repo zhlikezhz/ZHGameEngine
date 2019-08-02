@@ -68,11 +68,11 @@ bool GLShader::build(const char* vBuff, const char* fBuff)
     unsigned int fShader = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fShader, 1, &fBuff, NULL);
     glCompileShader(fShader);
-    glGetShaderiv(vShader, GL_COMPILE_STATUS, &status);
+    glGetShaderiv(fShader, GL_COMPILE_STATUS, &status);
     if (!status) {
         glDeleteShader(vShader);
         glDeleteShader(fShader);
-        glGetShaderInfoLog(vShader, 512, NULL, infoLog);
+        glGetShaderInfoLog(fShader, 512, NULL, infoLog);
         std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
         return false;
     }

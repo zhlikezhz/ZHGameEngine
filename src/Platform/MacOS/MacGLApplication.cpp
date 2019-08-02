@@ -2,6 +2,8 @@
 #include "GL/GLRender.hpp"
 #include "GL/GLShader.hpp"
 #include "Mesh.hpp"
+#include "Material.hpp"
+#include "Texture.hpp"
 using namespace ZH;
 
 namespace ZH
@@ -17,13 +19,23 @@ int MacGLApplication::Initialize()
     int ret = GLApplication::Initialize();
 
     Mesh* mesh = new Mesh();
-    mesh->addTriangle(-0.5f, -0.5f, 0.0f);
-    mesh->addTriangle(0.5f, -0.5f, 0.0f);
-    mesh->addTriangle(0.0f, 0.5f, 0.0f);
-    render.setMesh(mesh);
+    mesh->addPoint(-0.5f, -0.5f, 0.0f);
+    mesh->addPoint(0.5f, -0.5f, 0.0f);
+    mesh->addPoint(0.0f, 0.5f, 0.0f);
+    mesh->addUV(0.0f, 0.0f);
+    mesh->addUV(1.0f, 0.0f);
+    mesh->addUV(0.5f, 1.0f);
 
-    GLShader* shader = GLShader::createFromFile("/Users/zouhao/Code/github/res/vertex.gl", "/Users/zouhao/Code/github/res/fragment.gl");
+    Material* material = new Material();
+    ShaderParameterValue value;
+    value.texture = Texture::createFromFile("/Users/zouhao/Code/github/res/image/wall.jpg");
+    material->addValue("ourTexture", ShaderParameterType::TEXTURE, value);
+
+    GLShader* shader = GLShader::createFromFile("/Users/zouhao/Code/github/res/shader/uv_vertex.gl", "/Users/zouhao/Code/github/res/shader/uv_fragment.gl");
+
     render.setShader(shader);
+    render.setMesh(mesh);
+    render.setMaterial(material);
 
     m_renderManager.addRender(&render);
 

@@ -3,7 +3,7 @@ using namespace ZH;
 
 Mesh::Mesh()
 :m_vUV(),
-m_vTriangles(),
+m_vPoints(),
 m_bDirty(true)
 {
 
@@ -14,21 +14,21 @@ Mesh::~Mesh()
 
 }
 
-void Mesh::addTriangle(float x, float y, float z)
+void Mesh::addPoint(float x, float y, float z)
 {
-    Triangle triangle(x, y, z);
-    addTriangle(triangle);
+    Point point(x, y, z);
+    addPoint(point);
 }
 
-void Mesh::addTriangle(Triangle triangle)
+void Mesh::addPoint(Point point)
 {
-    m_vTriangles.push_back(triangle);
+    m_vPoints.push_back(point);
     m_bDirty = true;
 }
 
-void Mesh::addTriangles(std::vector<Triangle>& triangles)
+void Mesh::addPoints(std::vector<Point>& points)
 {
-    m_vTriangles.insert(m_vTriangles.end(), triangles.begin(), triangles.end());
+    m_vPoints.insert(m_vPoints.end(), points.begin(), points.end());
     m_bDirty = true;
 }
 
@@ -69,22 +69,22 @@ float* Mesh::getUV()
     return uvs;
 }
 
-float* Mesh::getTriangles() 
+float* Mesh::getPoints() 
 {
-    int num = m_vTriangles.size();
-    float* triangles = nullptr;
+    int num = m_vPoints.size();
+    float* points = nullptr;
     if (num > 0) {
-        triangles = new float[num * 3];
-        std::vector<Triangle>::const_iterator iter = m_vTriangles.cbegin();
+        points = new float[num * 3];
+        std::vector<Point>::const_iterator iter = m_vPoints.cbegin();
         for (int i = 0; i < num; i++) {
-            std::vector<Triangle>::const_iterator tr = iter + i;
+            std::vector<Point>::const_iterator tr = iter + i;
 
             int off = i * 3;
-            triangles[off] = tr->x;
-            triangles[off+1] = tr->y;
-            triangles[off+2] = tr->z;
+            points[off] = tr->x;
+            points[off+1] = tr->y;
+            points[off+2] = tr->z;
         }
     }
-    return triangles;
+    return points;
 }
     

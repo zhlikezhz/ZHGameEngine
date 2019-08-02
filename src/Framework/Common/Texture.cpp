@@ -16,7 +16,7 @@ Texture::~Texture()
     unloadImage();
 }
 
-Texture* Texture::createTextureFromFile(const char* filePath)
+Texture* Texture::createFromFile(const char* filePath)
 {
     Texture* image = new Texture;
     if (image->loadImage(filePath)) {
