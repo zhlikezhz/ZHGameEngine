@@ -8,7 +8,7 @@ using namespace ZH;
 
 namespace ZH
 {
-    GfxConfiguration config(8, 8, 8, 8, 32, 0, 0, 960, 520, "Game Engine (MacOS OpenGL)");
+    GfxConfiguration config(8, 8, 8, 8, 32, 0, 0, 500, 500, "Game Engine (MacOS OpenGL)");
     MacGLApplication g_App(config);
     IApplication* g_pApp = &g_App;
     GLRender render;
@@ -19,12 +19,26 @@ int MacGLApplication::Initialize()
     int ret = GLApplication::Initialize();
 
     Mesh* mesh = new Mesh();
-    mesh->addPoint(-0.5f, -0.5f, 0.0f);
-    mesh->addPoint(0.5f, -0.5f, 0.0f);
-    mesh->addPoint(0.0f, 0.5f, 0.0f);
-    mesh->addUV(0.0f, 0.0f);
-    mesh->addUV(1.0f, 0.0f);
-    mesh->addUV(0.5f, 1.0f);
+    mesh->addPoint(-0.5, 0.5);
+    mesh->addPoint(0.5, 0.5);
+    mesh->addPoint(-0.5, -0.5);
+    mesh->addPoint(0.5, -0.5);
+    mesh->addPoint(0.5, 0.5);
+    mesh->addPoint(-0.5, -0.5);
+
+    mesh->addUV(0.0, 1.0);
+    mesh->addUV(1.0, 1.0);
+    mesh->addUV(0.0, 0.0);
+    mesh->addUV(1.0, 0.0);
+    mesh->addUV(1.0, 1.0);
+    mesh->addUV(0.0, 0.0);
+
+    // mesh->addPoint(-0.5f, -0.5f, 0.0f);
+    // mesh->addPoint(0.5f, -0.5f, 0.0f);
+    // mesh->addPoint(0.0f, 0.5f, 0.0f);
+    // mesh->addUV(0.0f, 0.0f);
+    // mesh->addUV(1.0f, 0.0f);
+    // mesh->addUV(0.5f, 1.0f);
 
     Material* material = new Material();
     ShaderParameterValue value;
