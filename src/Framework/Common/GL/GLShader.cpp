@@ -1,4 +1,5 @@
 #include "GLShader.hpp"
+#include "glm/gtc/type_ptr.hpp"
 #include "glad/glad.h"
 #include <iostream>
 #include <sstream>
@@ -52,6 +53,7 @@ bool GLShader::build(const char* vBuff, const char* fBuff)
 {
     int status;
     char infoLog[512];
+
 
     unsigned int vShader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vShader, 1, &vBuff, NULL);
@@ -123,27 +125,32 @@ void GLShader::use()
     glUseProgram(m_uShaderProgramID);
 }
 
-void GLShader::setb(const char* name, bool value)
+void GLShader::setBool(const char* name, bool value)
 {
     glUniform1i(glGetUniformLocation(m_uShaderProgramID, name), (int)value);
 }
 
-void GLShader::seti(const char* name, int value)
+void GLShader::setInt(const char* name, int value)
 {
     glUniform1i(glGetUniformLocation(m_uShaderProgramID, name), (int)value);
 }
 
-void GLShader::setui(const char* name, unsigned int value)
+void GLShader::setUInt(const char* name, unsigned int value)
 {
     glUniform1ui(glGetUniformLocation(m_uShaderProgramID, name), value);
 }
 
-void GLShader::setf(const char* name, float value)
+void GLShader::setFloat(const char* name, float value)
 {
     glUniform1f(glGetUniformLocation(m_uShaderProgramID, name), value);
 }
 
-void GLShader::set3f(const char* name, float value1, float value2, float value3)
+void GLShader::set3Float(const char* name, float value1, float value2, float value3)
 {
     glUniform3f(glGetUniformLocation(m_uShaderProgramID, name), value1, value2, value3);
+}
+
+void GLShader::setMat4(const char* name, glm::mat4 matrix)
+{
+    glUniformMatrix4fv(glGetUniformLocation(m_uShaderProgramID, name), 1, GL_FALSE, glm::value_ptr(matrix));
 }

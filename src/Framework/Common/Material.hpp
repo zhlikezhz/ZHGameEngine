@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "Texture.hpp"
+#include "glm/mat4x4.hpp"
 
 namespace ZH
 {
@@ -13,6 +14,7 @@ namespace ZH
         FLOAT,
         TEXTURE,
         VECTOR3F,
+        MATRIX4,
     };
 
     union ShaderParameterValue
@@ -23,6 +25,7 @@ namespace ZH
         float val3f[3];
         unsigned int valui;
         Texture* texture;
+        glm::mat4 mat4x4;
     };
 
     struct ShaderParameter

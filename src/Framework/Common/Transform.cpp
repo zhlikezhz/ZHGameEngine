@@ -1,4 +1,5 @@
 #include "Transform.hpp"
+#include "glm/gtc/matrix_transform.hpp"
 using namespace ZH;
 
 Transform::Transform()
@@ -18,34 +19,34 @@ Transform::~Transform()
 
 }
 
-void Transform:setX(float x)
+void Transform::setX(float x)
 {
-    if (m_vec3Coord.x != 0) {
-        m_vec3Coord.x = x;
+    if (m_vec3Position.x != 0) {
+        m_vec3Position.x = x;
         setDirty(true);
     }
 }
 
-void Transform:setY(float y)
+void Transform::setY(float y)
 {
-    if (m_vec3Coord.y != 0) {
-        m_vec3Coord.y = y;
+    if (m_vec3Position.y != 0) {
+        m_vec3Position.y = y;
         setDirty(true);
     }
 }
 
-void Transform:setZ(float z)
+void Transform::setZ(float z)
 {
-    if (m_vec3Coord.z != 0) {
-        m_vec3Coord.z = z;
+    if (m_vec3Position.z != 0) {
+        m_vec3Position.z = z;
         setDirty(true);
     }
 }
 
 void Transform::setPosition(glm::vec3 vec)
 {
-    if (m_vec3Coord != vec) {
-        m_vec3Coord = vec;
+    if (m_vec3Position != vec) {
+        m_vec3Position = vec;
         setDirty(true);
     }
 }
@@ -114,7 +115,7 @@ void Transform::setScale(glm::vec3 vec)
 
 void Transform::setScale(float x, float y, float z=0)
 {
-    setScale(glm::vec3(x, y, z))
+    setScale(glm::vec3(x, y, z));
 }
 
 void Transform::setRotateX(float x)
@@ -162,7 +163,7 @@ void Transform::setParent(Transform* parent)
     }
 }
 
-glm::mat4 Transform::getModeMatrix()
+glm::mat4 Transform::getModelMatrix()
 {
     calModelMatrix();
     return m_mat4Model;
@@ -174,14 +175,14 @@ void Transform::calModelMatrix()
     if (isDirty() || (m_pParent != nullptr && m_pParent->isDirty())) {
         glm::mat4 trans = glm::mat4(1.0f);
         if (m_pParent != nullptr) {
-            trans = m_pParent->getModeMatrix();
+            trans = m_pParent->getModelMatrix();
         }
         trans = glm::translate(trans, glm::vec3(getX(), getY(), getX()));
         trans = glm::rotate(trans, glm::radians(getRotateY()), glm::vec3(0.0, 1.0, 0.0));
         trans = glm::rotate(trans, glm::radians(getRotateX()), glm::vec3(1.0, 0.0, 0.0));
         trans = glm::rotate(trans, glm::radians(getRotateZ()), glm::vec3(0.0, 0.0, 1.0));
         trans = glm::scale(trans, glm::vec3(getScaleX(), getScaleY(), getScaleZ()));
-        m_vec3WorldPosition = (trans * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz;
+        m_vec3WorldPosition = trans * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
         m_mat4Model = trans;
         setDirty(false);
     }

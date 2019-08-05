@@ -3,6 +3,8 @@ add_library(Common
 GL/GLShader.cpp 
 GL/GLApplication.cpp
 GL/GLRender.cpp
+Camera.cpp
+Transform.cpp
 Render.cpp
 Material.cpp
 Mesh.cpp

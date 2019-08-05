@@ -93,7 +93,7 @@ void GLRender::preproccessing()
                 glGenerateMipmap(GL_TEXTURE_2D);
 
                 m_mTextureIDs.insert(ShaderParameter2ID::value_type(iter->name, textureID));
-                m_pShader->seti(iter->name, count++);
+                m_pShader->setInt(iter->name, count++);
             }
         }
         glBindTexture(GL_TEXTURE_2D, 0);
@@ -105,6 +105,7 @@ void GLRender::render()
 {
     if (m_pShader != nullptr) {
         if (m_pMesh != nullptr) {
+            glEnable(GL_DEPTH_TEST);
             preproccessing();
 
             if (m_pMaterial != nullptr) {
@@ -134,15 +135,17 @@ void GLRender::render()
                 const ShaderParameterList shaderParameters = m_pMaterial->getShaderParameters();
                 for (ShaderParameterList::const_iterator iter = shaderParameters.cbegin(); iter != shaderParameters.cend(); iter++) {
                     if (iter->type == ShaderParameterType::BOOL) {
-                        m_pShader->setb(iter->name, iter->value.valb);
+                        m_pShader->setBool(iter->name, iter->value.valb);
                     } else if (iter->type == ShaderParameterType::INT) {
-                        m_pShader->seti(iter->name, iter->value.vali);
+                        m_pShader->setInt(iter->name, iter->value.vali);
                     } else if (iter->type == ShaderParameterType::UINT) {
-                        m_pShader->setui(iter->name, iter->value.valui);
+                        m_pShader->setUInt(iter->name, iter->value.valui);
                     } else if (iter->type == ShaderParameterType::FLOAT) {
-                        m_pShader->setf(iter->name, iter->value.valf);
+                        m_pShader->setFloat(iter->name, iter->value.valf);
                     } else if (iter->type == ShaderParameterType::VECTOR3F) {
-                        m_pShader->set3f(iter->name, iter->value.val3f[0], iter->value.val3f[1], iter->value.val3f[2]);
+                        m_pShader->set3Float(iter->name, iter->value.val3f[0], iter->value.val3f[1], iter->value.val3f[2]);
+                    } else if (iter->type == ShaderParameterType::MATRIX4) {
+                        m_pShader->setMat4(iter->name, iter->value.mat4x4);
                     }
                 }
             }

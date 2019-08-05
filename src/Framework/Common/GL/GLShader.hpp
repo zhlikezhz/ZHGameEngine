@@ -1,5 +1,6 @@
 #pragma once
 #include "Shader.hpp"
+#include "glm/mat4x4.hpp"
 
 namespace ZH
 {
@@ -13,11 +14,12 @@ namespace ZH
             static GLShader* createFromMemory(const char* , const char* );
 
             void use();
-            void setb(const char* name, bool val);
-            void seti(const char* name, int val);
-            void setui(const char* name, unsigned int val);
-            void setf(const char* name, float val);
-            void set3f(const char* name, float val1, float val2, float val3);
+            void setBool(const char* name, bool val);
+            void setInt(const char* name, int val);
+            void setUInt(const char* name, unsigned int val);
+            void setFloat(const char* name, float val);
+            void set3Float(const char* name, float val1, float val2, float val3);
+            void setMat4(const char* name, glm::mat4 matrix);
 
         private:
             unsigned int m_uShaderProgramID;

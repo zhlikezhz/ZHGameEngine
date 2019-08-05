@@ -1,10 +1,10 @@
 #pragma once
 #include "glm/vec3.hpp"
-#include "glm/mat4.hpp"
+#include "glm/mat4x4.hpp"
 
 namespace ZH
 {
-    class Transform : public Component
+    class Transform
     {
         public:
             Transform();
@@ -55,10 +55,10 @@ namespace ZH
             inline bool isDirty() { return m_bIsDirty; }
             void setDirty(bool dirty);
 
-            inline void getParent() { return m_pParent; }
+            inline Transform* getParent() { return m_pParent; }
             void setParent(Transform* parent);
 
-            glm::mat4 getModelMatrix() { return m_mat4Model; }
+            glm::mat4 getModelMatrix();
         
         private:
             void calModelMatrix();
