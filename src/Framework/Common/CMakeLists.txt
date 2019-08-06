@@ -3,7 +3,7 @@ add_library(Common
 GL/GLShader.cpp 
 GL/GLApplication.cpp
 GL/GLRender.cpp
-Scene.hpp
+Scene.cpp
 Component.cpp
 GameObject.cpp
 Camera.cpp

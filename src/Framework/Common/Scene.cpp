@@ -37,7 +37,7 @@ void Scene::removeCamera(Camera* camera)
 {
     std::vector<Camera*>::iterator iter = std::find(m_vCameraList.begin(), m_vCameraList.end(), camera);
     if (iter != m_vCameraList.end()) {
-        m_vCameraList.earse(iter);
+        m_vCameraList.erase(iter);
     }
 }
 
@@ -45,8 +45,8 @@ void Scene::removeCameraByName(const char* name)
 {
     std::vector<Camera*>::iterator iter = m_vCameraList.begin();
     for (; iter != m_vCameraList.end(); iter++) {
-        if (iter->getName() == name) {
-            m_vCameraList.earse(iter);
+        if ((*iter)->getName() == name) {
+            m_vCameraList.erase(iter);
             return;
         }
     }
@@ -54,7 +54,7 @@ void Scene::removeCameraByName(const char* name)
 
 void Scene::addGameObject(GameObject* object)
 {
-    std::vector<GameObject*> iter = std::find(m_vGameObjectList.begin(), m_vGameObjectList.end(), object);
+    std::vector<GameObject*>::iterator iter = std::find(m_vGameObjectList.begin(), m_vGameObjectList.end(), object);
     if (iter == m_vGameObjectList.end()) {
         m_vGameObjectList.push_back(object);
     }
@@ -62,18 +62,18 @@ void Scene::addGameObject(GameObject* object)
 
 void Scene::removeGameObject(GameObject* object)
 {
-    std::vector<GameObject*> iter = std::find(m_vGameObjectList.begin(), m_vGameObjectList.end(), object);
+    std::vector<GameObject*>::iterator iter = std::find(m_vGameObjectList.begin(), m_vGameObjectList.end(), object);
     if (iter != m_vGameObjectList.end()) {
-        m_vGameObjectList.earse(iter);
+        m_vGameObjectList.erase(iter);
     }
 }
 
 void Scene::removeGameObjectByName(const char* name)
 {
-    std::vector<GameObject*> iter = m_vGameObjectList.begin();
+    std::vector<GameObject*>::iterator iter = m_vGameObjectList.begin();
     for (; iter != m_vGameObjectList.end(); iter++) {
-        if (iter->getName() == name) {
-            m_vGameObjectList.earse(iter);
+        if ((*iter)->getName() == name) {
+            m_vGameObjectList.erase(iter);
             return;
         }
     }
@@ -81,10 +81,11 @@ void Scene::removeGameObjectByName(const char* name)
 
 GameObject* Scene::getGameObjectByName(const char* name)
 {
-    std::vector<GameObject*> iter = m_vGameObjectList.begin();
+    std::vector<GameObject*>::iterator iter = m_vGameObjectList.begin();
     for (; iter != m_vGameObjectList.end(); iter++) {
-        if (iter->getName() == name) {
-            return iter;
+        if ((*iter)->getName() == name) {
+            return *iter;
         }
     }
+    return nullptr;
 }
