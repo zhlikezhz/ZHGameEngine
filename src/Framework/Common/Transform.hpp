@@ -1,10 +1,11 @@
 #pragma once
+#include "GameObject.hpp"
 #include "glm/vec3.hpp"
 #include "glm/mat4x4.hpp"
 
 namespace ZH
 {
-    class Transform
+    class Transform : public GameObject
     {
         public:
             Transform();

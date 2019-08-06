@@ -5,6 +5,7 @@
 #include "Shader.hpp"
 #include "Material.hpp"
 #include "Render.hpp"
+#include "Camera.hpp"
 
 namespace ZH
 {
@@ -21,8 +22,11 @@ namespace ZH
             virtual void setShader(Shader* shader);
             virtual void setMaterial(Material* material);
             virtual void preproccessing();
+
+            inline void setCamera(Camera* camera) {m_pCamera = camera;}
         
         private:
+            Camera* m_pCamera;
             unsigned int m_uiVAO;
             unsigned int m_uiUVVBO;
             unsigned int m_uiPointVBO;

@@ -4,6 +4,7 @@
 #include "Material.hpp"
 #include "Mesh.hpp"
 #include <vector>
+#include "glm/gtc/matrix_transform.hpp"
 using namespace ZH;
 
 GLRender::GLRender()
@@ -15,6 +16,7 @@ GLRender::GLRender()
     m_pMesh = nullptr;
     m_pShader = nullptr;
     m_pMaterial = nullptr;
+    m_pCamera = nullptr;
 }
 
 GLRender::~GLRender()
@@ -98,6 +100,22 @@ void GLRender::preproccessing()
         }
         glBindTexture(GL_TEXTURE_2D, 0);
         m_pMaterial->setDirty(false);
+    }
+
+    if (m_pMaterial != nullptr && m_pCamera != nullptr && m_pCamera->isDirty()) {
+        ShaderParameterValue viewParameter;
+        viewParameter.mat4x4 = m_pCamera->getViewMatrix();
+        m_pMaterial->addValue("view", ShaderParameterType::MATRIX4, viewParameter);
+
+        ShaderParameterValue modelParameter;
+        modelParameter.mat4x4 = glm::mat4(1.0f);
+        m_pMaterial->addValue("model", ShaderParameterType::MATRIX4, modelParameter);
+
+        ShaderParameterValue projectionParameter;
+        projectionParameter.mat4x4 = glm::perspective(glm::radians(m_pCamera->getFOV()), 1.0f, m_pCamera->getFarPanel(), m_pCamera->getNearPanel());
+        m_pMaterial->addValue("projection", ShaderParameterType::MATRIX4, projectionParameter);
+
+        m_pCamera->setDirty(false);
     }
 }
 

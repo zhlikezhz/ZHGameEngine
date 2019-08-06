@@ -78,26 +78,30 @@ int MacGLApplication::Initialize()
     value.texture = Texture::createFromFile("/Users/zouhao/Code/github/res/image/wall.jpg");
     material->addValue("ourTexture", ShaderParameterType::TEXTURE, value);
 
-    glm::mat4 model         = glm::mat4(1.0f); 
-    glm::mat4 view          = glm::mat4(1.0f);
-    glm::mat4 projection    = glm::mat4(1.0f);
-    model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-    view  = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
-    projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 100.0f);
-    ShaderParameterValue value1;
-    value1.mat4x4 = projection;
-    material->addValue("projection", ShaderParameterType::MATRIX4, value1);
-    ShaderParameterValue value2;
-    value2.mat4x4 = model;
-    material->addValue("model", ShaderParameterType::MATRIX4, value2);
-    ShaderParameterValue value3;
-    value3.mat4x4 = view;
-    material->addValue("view", ShaderParameterType::MATRIX4, value3);
+    Camera* camera = new Camera();
+    camera->setZ(3.0f);
+
+    // glm::mat4 model         = glm::mat4(1.0f); 
+    // glm::mat4 view          = glm::mat4(1.0f);
+    // glm::mat4 projection    = glm::mat4(1.0f);
+    // model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    // view  = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+    // projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 100.0f);
+    // ShaderParameterValue value1;
+    // value1.mat4x4 = projection;
+    // material->addValue("projection", ShaderParameterType::MATRIX4, value1);
+    // ShaderParameterValue value2;
+    // value2.mat4x4 = model;
+    // material->addValue("model", ShaderParameterType::MATRIX4, value2);
+    // ShaderParameterValue value3;
+    // value3.mat4x4 = view;
+    // material->addValue("view", ShaderParameterType::MATRIX4, value3);
 
     GLShader* shader = GLShader::createFromFile("/Users/zouhao/Code/github/res/shader/mvp_vertex.gl", "/Users/zouhao/Code/github/res/shader/mvp_fragment.gl");
     render.setShader(shader);
     render.setMesh(mesh);
     render.setMaterial(material);
+    render.setCamera(camera);
 
     m_renderManager.addRender(&render);
 

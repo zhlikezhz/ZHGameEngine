@@ -49,9 +49,18 @@ namespace ZH
             ~Material();
 
             inline void addValue(const char* name, ShaderParameterType type, ShaderParameterValue value) {
+                deleteValue(name);
                 m_vShaderParameter.push_back(ShaderParameter(name, type, value));
                 if (ShaderParameterType::TEXTURE == type) {
                     setDirty(true);
+                }
+            }
+            inline void deleteValue(const char* name) {
+                for (ShaderParameterList::const_iterator iter = m_vShaderParameter.cbegin(); iter != m_vShaderParameter.cend(); iter++) {
+                    if (iter->name == name) {
+                        m_vShaderParameter.erase(iter);
+                        return;
+                    }
                 }
             }
             inline const ShaderParameterList& getShaderParameters() {

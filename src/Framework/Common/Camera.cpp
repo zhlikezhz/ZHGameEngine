@@ -4,9 +4,9 @@ using namespace ZH;
 
 Camera::Camera()
 :m_bIsDirty(true),
-m_fFOV(0.0f),
-m_fFarPanel(0.0f),
-m_fNearPanel(0.0f),
+m_fFOV(45.0f),
+m_fFarPanel(0.1f),
+m_fNearPanel(100.0f),
 m_vec3Rotate(0.0f, 0.0f, 0.0f),
 m_vec3Position(0.0f, 0.0f, 0.0f),
 m_mat4View(1.0f)
@@ -120,7 +120,6 @@ void Camera::recalViewMatrix()
                                 xAxis.z, yAxis.z, zAxis.z, 0.0f,
                                 0.0f, 0.0f, 0.0f, 1.0f);
         m_mat4View = glm::translate(m_mat4View, -m_vec3Position);
-        
         setDirty(false);
     }
 }

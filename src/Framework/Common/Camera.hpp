@@ -1,22 +1,22 @@
 #pragma once
 #include "glm/vec3.hpp"
 #include "glm/mat4x4.hpp"
+#include "GameObject.hpp"
 
 namespace ZH
 {
-    class Camera 
+    class Camera : public GameObject
     {
         public:
             Camera();
             ~Camera();
 
-
             inline float getFOV() {return m_fFOV;}
             inline float getFarPanel() {return m_fFarPanel;}
             inline float getNearPanel() {return m_fNearPanel;}
-            inline void setFOV(float );
-            inline void setFarPanel(float );
-            inline void setNearPanel(float );
+            inline void setFOV(float fov) { m_fFOV = fov;}
+            inline void setFarPanel(float far) {m_fFarPanel = far;}
+            inline void setNearPanel(float near) {m_fNearPanel = near;}
 
             inline glm::vec3 getPosition() {return m_vec3Position;}
             inline float getX() { return m_vec3Position.x;}
