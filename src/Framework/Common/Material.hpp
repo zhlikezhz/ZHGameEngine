@@ -1,11 +1,14 @@
-#pragma once
+// #pragma once
+#ifndef ZH_MATERIAL
+#define ZH_MATERIAL
 #include <vector>
 #include "Texture.hpp"
 #include "glm/mat4x4.hpp"
+#include "Component.hpp"
+#include "Shader.hpp"
 
 namespace ZH
 {
-
     enum ShaderParameterType
     {
         BOOL,
@@ -42,8 +45,11 @@ namespace ZH
     };
 
     typedef std::vector<ShaderParameter> ShaderParameterList;
-    class Material
+
+    class Material : public Component
     {
+        DECLARE_CLASS(Material)
+
         public:
             Material();
             ~Material();
@@ -69,8 +75,17 @@ namespace ZH
             inline bool isDirty() {return m_bDirty;}
             inline void setDirty(bool dirty) {m_bDirty = dirty;}
 
+            inline Shader* getShader() { return m_pShader; }
+            inline void setShader(Shader* shader) {
+                m_pShader = shader;
+                setDirty(true);
+            }
+
         private:
             bool m_bDirty;
+            Shader* m_pShader;
             ShaderParameterList m_vShaderParameter;
     };
+
 }
+#endif

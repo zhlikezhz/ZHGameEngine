@@ -1,12 +1,14 @@
 #pragma once
-#include "GameObject.hpp"
+#include "Component.hpp"
 #include "glm/vec3.hpp"
 #include "glm/mat4x4.hpp"
 
 namespace ZH
 {
-    class Transform : public GameObject
+    class Transform : public Component
     {
+        DECLARE_CLASS(Transform)
+
         public:
             Transform();
             ~Transform();
@@ -54,10 +56,10 @@ namespace ZH
             glm::vec3 getWorldPosition();
 
             inline bool isDirty() { return m_bIsDirty; }
-            void setDirty(bool dirty);
+            inline void setDirty(bool dirty) { m_bIsDirty = dirty;}
 
             inline Transform* getParent() { return m_pParent; }
-            void setParent(Transform* parent);
+            inline void setParent(Transform* parent);
 
             glm::mat4 getModelMatrix();
         

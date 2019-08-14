@@ -16,6 +16,19 @@ Scene::~Scene()
 
 }
 
+void Scene::update(float delay)
+{
+    std::vector<Camera*>::const_iterator citer = m_vCameraList.cbegin();
+    for (; citer != m_vCameraList.cend(); citer++) {
+        (*citer)->update(delay);
+    }
+
+    std::vector<GameObject*>::const_iterator giter = m_vGameObjectList.cbegin();
+    for (; giter != m_vGameObjectList.cend(); giter++) {
+        (*giter)->update(delay);
+    }
+}
+
 void Scene::setMainCamera(Camera* camera)
 {
     if (m_pMainCamera != nullptr) {

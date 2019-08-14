@@ -37,6 +37,11 @@
         "memory": "cpp",
         "tuple": "cpp",
         "map": "cpp",
-        "set": "cpp"
+        "set": "cpp",
+        "__split_buffer": "cpp",
+        "__tree": "cpp",
+        "string": "cpp",
+        "string_view": "cpp",
+        "optional": "cpp"
     }
 }

@@ -1,6 +1,25 @@
 #pragma once
 #include <map>
 #include <string>
+#include <iostream>
+
+#define DECLARE_CLASS(name) \
+    private: \
+        static ComponentInfo* m_sComponentInfo; \
+    public:  \
+        virtual std::string getClassName(); \
+    private:\
+        static Component* createObject() {return new name;} 
+ 
+#define IMPLEMENT_CLASS_COMMON(name,func) \
+    ComponentInfo* name::m_sComponentInfo = ComponentInfo::createInfo((#name), \
+             (CreateClass) func); \
+                        \
+    std::string name::getClassName() \
+            {return m_sComponentInfo->getClassName();}
+ 
+#define IMPLEMENT_CLASS(name)            \
+    IMPLEMENT_CLASS_COMMON(name,name::createObject) 
 
 namespace ZH
 {
@@ -13,36 +32,47 @@ namespace ZH
     class Component
     {
         public:
-            static void registerComponent(const char* name, ComponentInfo* info);
-            static Component* createComponent(const char* name);
+            static void registerComponent(std::string name, ComponentInfo* info);
+            static Component* createComponent(std::string name);
         
             virtual void setGameObject(GameObject* object);
             virtual GameObject* getGameObject();
 
-            virtual const char* getClassName();
+            virtual std::string getClassName();
 
         protected:
-            virtual void update(float delay);
-            static String2Class s_mapString2Class;
+            virtual void update(float);
+
+        protected:
+            GameObject* m_pObject;
+        
+        private:
+            static String2Class* s_mapString2Class;
 
         private:
-            GameObject* m_pObject;
             friend class GameObject;
     };
 
     class ComponentInfo
     {
         public:
-            ComponentInfo(const char* name, CreateClass func)
+            ComponentInfo(std::string name, CreateClass func)
             {
                 m_pCreateFunc = func;
-                m_strClassName = name;
+                m_strClassName = std::string(name);
                 Component::registerComponent(name, this);
             }
 
             inline Component* createObject() { return (*m_pCreateFunc)(); }
-            inline std::string getClassName() { return m_strClassName;}
-        
+            inline std::string getClassName() { 
+                return m_strClassName;
+            }
+
+            inline static ComponentInfo* createInfo(std::string name, CreateClass func)
+            {
+                return (new ComponentInfo(name, func));
+            }
+
         private:
             ComponentInfo() {}
 
@@ -51,20 +81,5 @@ namespace ZH
             CreateClass m_pCreateFunc;
     };
 
-#define DECLARE_CLASS(name) \
-    protected: \
-        static ComponentInfo m_sComponentInfo; \
-    public:  \
-        static Object* createObject() {return new name;} \
-        virtual const char* getClassName(); 
- 
-#define IMPLEMENT_CLASS_COMMON(name,func) \
-    ComponentInfo name::m_sComponentInfo((#name), \
-             (CreateClass) func); \
-                        \
-    const char* name::getClassName() \
-            {return m_sComponentInfo.getClassName().c_str();}
- 
-#define IMPLEMENT_CLASS(name)            \
-    IMPLEMENT_CLASS_COMMON(name,name::createObject) 
+
 }

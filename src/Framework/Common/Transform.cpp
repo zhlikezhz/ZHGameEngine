@@ -2,6 +2,8 @@
 #include "glm/gtc/matrix_transform.hpp"
 using namespace ZH;
 
+IMPLEMENT_CLASS(Transform)
+
 Transform::Transform()
 : m_vec3Position(0.0f,0.0f,0.0f),
 m_vec3Scale(1.0f,1.0f,1.0f),

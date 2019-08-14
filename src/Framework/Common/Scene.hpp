@@ -23,6 +23,8 @@ namespace ZH
             void removeGameObject(GameObject* object);
             void removeGameObjectByName(const char* name);
             GameObject* getGameObjectByName(const char* name);
+            
+            virtual void update(float delay);
 
         private:
             Camera* m_pMainCamera;

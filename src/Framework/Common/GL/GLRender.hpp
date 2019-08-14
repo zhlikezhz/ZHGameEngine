@@ -1,35 +1,31 @@
 #pragma once
 #include <map>
 #include <string>
-#include "Mesh.hpp"
-#include "Shader.hpp"
-#include "Material.hpp"
 #include "Render.hpp"
-#include "Camera.hpp"
 
 namespace ZH
 {
+    class Camera;
     typedef std::map<std::string, unsigned int> ShaderParameter2ID; 
+
     class GLRender : public Render
     {
+        DECLARE_CLASS(GLRender)
 
         public:
             GLRender();
             ~GLRender();
 
             virtual void render();
-            virtual void setMesh(Mesh* mesh);
-            virtual void setShader(Shader* shader);
-            virtual void setMaterial(Material* material);
             virtual void preproccessing();
-
-            inline void setCamera(Camera* camera) {m_pCamera = camera;}
+            virtual void update(float);
         
         private:
             Camera* m_pCamera;
             unsigned int m_uiVAO;
             unsigned int m_uiUVVBO;
             unsigned int m_uiPointVBO;
+            unsigned int m_uiNormalVBO;
             ShaderParameter2ID m_mTextureIDs;
     };
 }

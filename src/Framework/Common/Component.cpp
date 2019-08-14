@@ -3,22 +3,31 @@
 #include "GameObject.hpp"
 using namespace ZH;
 
-String2Class Component::s_mapString2Class;
+String2Class* Component::s_mapString2Class = NULL;
 
-void Component::registerComponent(const char* name, ComponentInfo* info)
+void Component::registerComponent(std::string name, ComponentInfo* info)
 {
-    String2Class::iterator iter = s_mapString2Class.find(name);
-    if (iter != s_mapString2Class.end()) {
-        s_mapString2Class.insert(std::pair<std::string, ComponentInfo*>(name, info));
+    if (s_mapString2Class == NULL) {
+        s_mapString2Class = new String2Class();
+    }
+
+    String2Class::iterator iter = s_mapString2Class->find(name);
+    if (iter == s_mapString2Class->end()) {
+        s_mapString2Class->insert(std::pair<std::string, ComponentInfo*>(name, info));
     } else {
         iter->second = info;
     }
 }
 
-Component* Component::createComponent(const char* name)
+Component* Component::createComponent(std::string name)
 {
-    String2Class::iterator iter = s_mapString2Class.find(name);
-    if (iter != s_mapString2Class.end()) {
+    if (s_mapString2Class == NULL) {
+        std::cout << "class \'" << name << "\' create function no exist." << std::endl;
+        return NULL;
+    }
+
+    String2Class::iterator iter = s_mapString2Class->find(name);
+    if (iter != s_mapString2Class->end()) {
         return iter->second->createObject();
     }
     std::cout << "class \'" << name << "\' create function no exist." << std::endl;
@@ -40,7 +49,7 @@ void Component::update(float delay)
 
 }
 
-const char* Component::getClassName()
+std::string Component::getClassName()
 {
     return "Component";
 }

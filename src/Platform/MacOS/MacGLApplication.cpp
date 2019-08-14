@@ -5,6 +5,9 @@
 #include "Mesh.hpp"
 #include "Material.hpp"
 #include "Texture.hpp"
+#include "GameObject.hpp"
+#include "Transform.hpp"
+#include "Camera.hpp"
 #include <iostream>
 using namespace ZH;
 
@@ -57,58 +60,49 @@ namespace ZH
     GfxConfiguration config(8, 8, 8, 8, 32, 0, 0, 500, 500, "Game Engine (MacOS OpenGL)");
     MacGLApplication g_App(config);
     IApplication* g_pApp = &g_App;
-    GLRender render;
+    Scene g_scene;
 }
 
 int MacGLApplication::Initialize()
 {
     int ret = GLApplication::Initialize();
 
+    Camera* camera = new Camera();
+    // camera->setRotateX(10.0f);
+    // camera->setRotateY(10.0f);
+    camera->setRotateZ(45.0f);
+    camera->setZ(3.0f);
+    g_scene.addCamera(camera);
 
-    Mesh* mesh = new Mesh();
-    int len = sizeof(vertices) / 4;
-    std::cout << len << std::endl;
-    for (int i = 0; i < len; i = i + 5) {
-        mesh->addPoint(vertices[i], vertices[i+1], vertices[i+2]);
-        mesh->addUV(vertices[i+3], vertices[i+4]);
-    }
+    GameObject* gameObject = new GameObject();
+    g_scene.addGameObject(gameObject);
+    gameObject->setCamera(camera);
 
+    Transform* transform = gameObject->addComponent<Transform>();
+    transform->setRotateX(-55.0f);
+    // transform->setRotateY(-55.0f);
+
+    Material* material = gameObject->addComponent<Material>();
+    GLShader* shader = GLShader::createFromFile("/Users/zouhao/Code/github/res/shader/mvp_vertex.gl", "/Users/zouhao/Code/github/res/shader/mvp_fragment.gl");
+    material->setShader(shader);
     ShaderParameterValue value;
-    Material* material = new Material();
     value.texture = Texture::createFromFile("/Users/zouhao/Code/github/res/image/wall.jpg");
     material->addValue("ourTexture", ShaderParameterType::TEXTURE, value);
 
-    Camera* camera = new Camera();
-    camera->setZ(3.0f);
+    Mesh* mesh = gameObject->addComponent<Mesh>();
 
-    // glm::mat4 model         = glm::mat4(1.0f); 
-    // glm::mat4 view          = glm::mat4(1.0f);
-    // glm::mat4 projection    = glm::mat4(1.0f);
-    // model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-    // view  = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
-    // projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 100.0f);
-    // ShaderParameterValue value1;
-    // value1.mat4x4 = projection;
-    // material->addValue("projection", ShaderParameterType::MATRIX4, value1);
-    // ShaderParameterValue value2;
-    // value2.mat4x4 = model;
-    // material->addValue("model", ShaderParameterType::MATRIX4, value2);
-    // ShaderParameterValue value3;
-    // value3.mat4x4 = view;
-    // material->addValue("view", ShaderParameterType::MATRIX4, value3);
+    int len = sizeof(vertices) / 4;
+    for (int i = 0; i < len; i = i + 5) {
+        mesh->addPoint(glm::vec3(vertices[i], vertices[i+1], vertices[i+2]));
+        mesh->addUV(glm::vec2(vertices[i+3], vertices[i+4]));
+    }
 
-    GLShader* shader = GLShader::createFromFile("/Users/zouhao/Code/github/res/shader/mvp_vertex.gl", "/Users/zouhao/Code/github/res/shader/mvp_fragment.gl");
-    render.setShader(shader);
-    render.setMesh(mesh);
-    render.setMaterial(material);
-    render.setCamera(camera);
-
-    m_renderManager.addRender(&render);
+    gameObject->addComponent<GLRender>();
 
     return ret;
 }
 
 void MacGLApplication::OnDraw()
 {
-    m_renderManager.render();
+    g_scene.update(0.1f);
 }
