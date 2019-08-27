@@ -12,6 +12,7 @@ namespace ZH
     {
         typedef std::vector<Component*> ComponentList;
         typedef std::map<std::string, ComponentList*> NameToComponentList;
+        typedef std::vector<GameObject*> GObjectChildren;
         public:
             GameObject();
             ~GameObject();
@@ -22,7 +23,8 @@ namespace ZH
 
             template<class T>
             T* addComponent() {
-                T* comp = new T; addComponent(dynamic_cast<Component*>(comp));
+                T* comp = new T; 
+                addComponent(dynamic_cast<Component*>(comp));
                 return comp;
             }
 
@@ -30,21 +32,29 @@ namespace ZH
             void removeComponents(std::string name);
 
             Component* getComponent(std::string name);
-            const std::vector<Component*>* getComponents(std::string name);
+            std::vector<Component*> getComponents(std::string name);
 
             inline std::string getName() { return m_strName; }
             inline void setName(std::string name) { m_strName = name;}
 
-            inline void setCamera(Camera* camera) { m_pCamera = camera; }
-            inline Camera* getCamera() {return m_pCamera;}
+            Camera* getCamera();
+
+            void addChild(GameObject* object);
+            void removeChild(GameObject* object);
+            GameObject* getChild(const char* name);
+            std::vector<GameObject*> getChildren();
+            inline GameObject* getParent() { return m_pGObjectParent; }
+            void setParent(GameObject* obj);
 
         protected:
-            void update(float delay);
+            virtual void update();
+            virtual void destroy();
         
         protected:
             std::string m_strName;
+            GObjectChildren m_vGObjectChildren;
             NameToComponentList m_mapName2CompList;
-            Camera* m_pCamera;
+            GameObject* m_pGObjectParent;
         
         private:
             friend class Scene;

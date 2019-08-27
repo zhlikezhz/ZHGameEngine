@@ -53,3 +53,8 @@ std::string Component::getClassName()
 {
     return "Component";
 }
+
+void Component::parentChanged()
+{
+
+}

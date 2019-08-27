@@ -1,4 +1,5 @@
 #include "Transform.hpp"
+#include "GameObject.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 using namespace ZH;
 
@@ -188,4 +189,11 @@ void Transform::calModelMatrix()
         m_mat4Model = trans;
         setDirty(false);
     }
+}
+
+void Transform::parentChanged()
+{
+    GameObject* gameObject = m_pObject->getParent();
+    Transform* transform = (Transform*)gameObject->getComponent("Transform");
+    setParent(transform);
 }

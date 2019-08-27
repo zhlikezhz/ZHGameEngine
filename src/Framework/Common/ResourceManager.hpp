@@ -1,10 +1,10 @@
 #pragma once
+#include <string>
+#include "Asset.hpp"
 #include "IManager.hpp"
 
 namespace ZH
 {
-    typedef int ResourceID;
-
     class Mesh;
     class Texture;
     class ResourceManager : public IManager<ResourceManager>
@@ -17,7 +17,23 @@ namespace ZH
             virtual void init();
             virtual void destroy();
 
-            Asset* loadAsset(const char* name);
-            Asset* getAsset(ResourceID id);
+            template<class T>
+            T* loadAsset(std::string name) {
+
+            }
+
+            template<class T>
+            T* getAsset(std::string name) {
+
+            }
+
+            template<class T>
+            T* getAsset(AssetID id) {
+
+            }
+
+            Asset* loadAsset(Asset* asset) {
+
+            }
     };
 }

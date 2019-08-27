@@ -21,6 +21,7 @@ find_library(GLFW_LIBRARY libglfw3.a ${PROJECT_LIBRARY_DIR} NO_DEFAULT_PATH)
 find_library(COCOA_LIBRARY Cocoa required)
 find_library(IOKIT_LIBRARY IOKit required)
 find_library(COREVIDEO_LIBRARY CoreVideo required)
+find_library(ASSIMP_LIBRARY libassimp.dylib ${PROJECT_LIBRARY_DIR} NO_DEFAULT_PATH)
 target_link_libraries(ZHGameEngine 
         Common 
         ${GLAD_LIBRARY}
@@ -28,4 +29,5 @@ target_link_libraries(ZHGameEngine
         ${COCOA_LIBRARY}
         ${IOKIT_LIBRARY}
         ${COREVIDEO_LIBRARY}
+        ${ASSIMP_LIBRARY}
         )

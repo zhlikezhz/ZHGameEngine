@@ -3,6 +3,8 @@ add_library(Common
 GL/GLShader.cpp 
 GL/GLApplication.cpp
 GL/GLRender.cpp
+SceneManager.cpp
+Model.cpp
 Scene.cpp
 Component.cpp
 GameObject.cpp
@@ -11,7 +13,6 @@ Transform.cpp
 Render.cpp
 Material.cpp
 Mesh.cpp
-RenderManager.cpp
 BaseApplication.cpp
 Texture.cpp
 main.cpp

@@ -35,22 +35,21 @@ namespace ZH
             static void registerComponent(std::string name, ComponentInfo* info);
             static Component* createComponent(std::string name);
         
-            virtual void setGameObject(GameObject* object);
-            virtual GameObject* getGameObject();
-
+            void setGameObject(GameObject* object);
+            GameObject* getGameObject();
             virtual std::string getClassName();
 
         protected:
+            friend class GameObject;
+
             virtual void update(float);
+            virtual void parentChanged();
 
         protected:
             GameObject* m_pObject;
         
         private:
             static String2Class* s_mapString2Class;
-
-        private:
-            friend class GameObject;
     };
 
     class ComponentInfo

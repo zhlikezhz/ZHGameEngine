@@ -42,6 +42,7 @@
         "__tree": "cpp",
         "string": "cpp",
         "string_view": "cpp",
-        "optional": "cpp"
+        "optional": "cpp",
+        "list": "cpp"
     }
 }

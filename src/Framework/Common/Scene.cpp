@@ -13,19 +13,36 @@ m_vGameObjectList()
 
 Scene::~Scene()
 {
+    destroy();
+}
+
+void Scene::init()
+{
+    Camera* camera = new Camera();
+    camera->setZ(3.0f);
+    setMainCamera(camera);
+}
+
+void Scene::destroy()
+{
 
 }
 
-void Scene::update(float delay)
+void Scene::start()
 {
-    std::vector<Camera*>::const_iterator citer = m_vCameraList.cbegin();
-    for (; citer != m_vCameraList.cend(); citer++) {
-        (*citer)->update(delay);
-    }
 
+}
+
+void Scene::stop()
+{
+
+}
+
+void Scene::update()
+{
     std::vector<GameObject*>::const_iterator giter = m_vGameObjectList.cbegin();
     for (; giter != m_vGameObjectList.cend(); giter++) {
-        (*giter)->update(delay);
+        (*giter)->update();
     }
 }
 
@@ -48,6 +65,7 @@ void Scene::addCamera(Camera* camera)
 
 void Scene::removeCamera(Camera* camera)
 {
+    removeGameObject(camera);
     std::vector<Camera*>::iterator iter = std::find(m_vCameraList.begin(), m_vCameraList.end(), camera);
     if (iter != m_vCameraList.end()) {
         m_vCameraList.erase(iter);
@@ -56,6 +74,7 @@ void Scene::removeCamera(Camera* camera)
 
 void Scene::removeCameraByName(const char* name)
 {
+    removeGameObjectByName(name);
     std::vector<Camera*>::iterator iter = m_vCameraList.begin();
     for (; iter != m_vCameraList.end(); iter++) {
         if ((*iter)->getName() == name) {

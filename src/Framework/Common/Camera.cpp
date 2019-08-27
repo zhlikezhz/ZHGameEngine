@@ -1,4 +1,6 @@
 #include "Camera.hpp"
+#include "Scene.hpp"
+#include "SceneManager.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 using namespace ZH;
 

@@ -1,6 +1,5 @@
 #pragma once
 #include "GL/GLApplication.hpp"
-#include "RenderManager.hpp"
 
 namespace ZH
 {
@@ -14,8 +13,5 @@ namespace ZH
 
         protected:
             virtual void OnDraw();
-
-        private:
-            RenderManager m_renderManager;
     };
 }

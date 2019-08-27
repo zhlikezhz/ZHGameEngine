@@ -59,9 +59,12 @@ namespace ZH
             inline void setDirty(bool dirty) { m_bIsDirty = dirty;}
 
             inline Transform* getParent() { return m_pParent; }
-            inline void setParent(Transform* parent);
+            void setParent(Transform* parent);
 
             glm::mat4 getModelMatrix();
+        
+        protected:
+            virtual void parentChanged();
         
         private:
             void calModelMatrix();

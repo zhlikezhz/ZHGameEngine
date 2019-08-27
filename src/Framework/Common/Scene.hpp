@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <string>
 
 namespace ZH
 {
@@ -8,9 +9,6 @@ namespace ZH
     class Scene
     {
         public:
-            Scene();
-            ~Scene();
-
             void setMainCamera(Camera* camera);
             inline Camera* getMainCamera() {return m_pMainCamera;}
 
@@ -23,11 +21,25 @@ namespace ZH
             void removeGameObject(GameObject* object);
             void removeGameObjectByName(const char* name);
             GameObject* getGameObjectByName(const char* name);
+
+            void setName(std::string name) { m_strName = name; }
+            std::string getName() { return m_strName; }
             
-            virtual void update(float delay);
+        protected:
+            Scene();
+            ~Scene();
+
+            void init();
+            void destroy();
+            void start();
+            void stop();
+            void update();
+
+            friend class SceneManager;
 
         private:
             Camera* m_pMainCamera;
+            std::string m_strName;
             std::vector<Camera*> m_vCameraList;
             std::vector<GameObject*> m_vGameObjectList;
     };
