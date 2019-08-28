@@ -38,6 +38,8 @@ int GLApplication::Initialize()
         return -1;
     }
 
+    glEnable(GL_DEPTH_TEST);
+
     return 0;
 }
 

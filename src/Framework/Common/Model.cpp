@@ -1,8 +1,13 @@
 #include "Mesh.hpp"
+#include "Material.hpp"
+#include "GLShader.hpp"
+#include "GLRender.hpp"
 #include "Texture.hpp"
 #include "Material.hpp"
 #include "Transform.hpp"
 #include "Model.hpp"
+#include "Camera.hpp"
+#include "SceneManager.hpp"
 using namespace ZH;
 
 Model::Model()
@@ -29,13 +34,18 @@ void Model::initWithFile(std::string path)
 {
     init();
     Assimp::Importer import;
-    const aiScene *scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+    const aiScene *scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
     if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
         std::cout << "ERROR::ASSIMP::" << import.GetErrorString() << std::endl;
         return;
     }
     m_strPath = path.substr(0, path.find_last_of('/'));
+
+    Camera* camera = SceneManager::getInstance()->getMainScene()->getMainCamera();
+    camera->setY(7);
+    camera->setZ(20);
+
 
     processNode(scene->mRootNode, scene);
 }
@@ -44,8 +54,7 @@ void Model::processNode(aiNode* node, const aiScene *scene)
 {
     for (int i = 0; i < node->mNumMeshes; i++) {
         aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-        Model* model = processMesh(mesh, scene);
-        model->transform->setParent(this->transform);
+        processMesh(mesh, scene);
     }
 
     for(int i = 0; i < node->mNumChildren; i++)
@@ -56,8 +65,13 @@ void Model::processNode(aiNode* node, const aiScene *scene)
 
 Model* Model::processMesh(aiMesh* aimesh, const aiScene* aiscene)
 {
-    Model* model = new Model();
+    GameObject* model = new GameObject();
+    model->addComponent<Transform>();
     Mesh* mesh = model->addComponent<Mesh>();
+    Material* material = model->addComponent<Material>();
+    GLShader* shader = GLShader::createFromFile("/Users/zouhao/Code/github/res/shader/default_vertex.gl", "/Users/zouhao/Code/github/res/shader/default_fragment.gl");
+    material->setShader(shader);
+    model->addComponent<GLRender>();
 
     bool hasUV = false;
     if (aimesh->mTextureCoords[0]) {
@@ -69,46 +83,69 @@ Model* Model::processMesh(aiMesh* aimesh, const aiScene* aiscene)
                     aimesh->mVertices[i].y,
                     aimesh->mVertices[i].z));
 
-        // mesh->addNormal(aimesh->mNormals[i].x,
+        // mesh->addNormal(glm::vec3(aimesh->mNormals[i].x,
         //             aimesh->mNormals[i].y,
-        //             aimesh->mNormals[i].z);
+        //             aimesh->mNormals[i].z));
 
-        // if (hasUV) {
-        //     mesh->addUV(aimesh->mTextureCoords[0][i].x, 
-        //                 aimesh->mTextureCoords[0][i].y);
-        // }
+        if (hasUV) {
+            mesh->addUV(glm::vec2(aimesh->mTextureCoords[0][i].x, 
+                        aimesh->mTextureCoords[0][i].y));
+        }
     }
 
-    // if (aimesh->mMaterialIndex >= 0) {
-    //     Material* material = model->addComponent<Material>();
-    //     aiMaterial* aimaterial = aiscene->mMaterials[aimesh->mMaterialIndex];
+    for(int i = 0; i < aimesh->mNumFaces; i++) {
+        aiFace face = aimesh->mFaces[i];
+        for(int j = 0; j < face.mNumIndices; j++) {
+            mesh->addIndex(face.mIndices[j]);
+        }
+    }
 
-    //     for (int i = 0; i < aimaterial->GetTextureCount(aiTextureType_DIFFUSE); i++) {
-    //         aiString textureName;
-    //         aimaterial->GetTexture(aiTextureType_DIFFUSE, i, &textureName);
-    //         std::string fullPath = sprintf("%s/%s", m_strPath.c_str(), textureName.C_Str());
+    if (aimesh->mMaterialIndex >= 0) {
+        aiMaterial* aimaterial = aiscene->mMaterials[aimesh->mMaterialIndex];
 
-    //         ShaderParameterValue value;
-    //         value.texture = Texture::createFromFile(fullPath);
-    //         material->addValue(sprintf("texture_diffues_%d", i), ShaderParameterType.TEXTURE, value);
-    //     }
+        char buff[1024];
+        for (int i = 0; i < aimaterial->GetTextureCount(aiTextureType_DIFFUSE); i++) {
+            aiString textureName;
+            aimaterial->GetTexture(aiTextureType_DIFFUSE, i, &textureName);
+            sprintf(buff, "%s/%s", m_strPath.c_str(), textureName.C_Str());
 
-    //     for (int i = 0; i < aimaterial->GetTextureCount(aiTextureType_SPECULAR); i++) {
-    //         aiString textureName;
-    //         aimaterial->GetTexture(aiTextureType_SPECULAR, i, &textureName);
-    //         std::string fullPath = sprintf("%s/%s", m_strPath.c_str(), textureName.C_Str());
+            ShaderParameterValue value;
+            value.texture = Texture::createFromFile(buff);
+            material->addValue("texture_diffuse0", ShaderParameterType::TEXTURE, value);
+        }
 
-    //         ShaderParameterValue value;
-    //         value.texture = Texture::createFromFile(fullPath);
-    //         material->addValue(sprintf("texture_specular_%d", i), ShaderParameterType.TEXTURE, value);
-    //     }
-    // }
+        for (int i = 0; i < aimaterial->GetTextureCount(aiTextureType_SPECULAR); i++) {
+            aiString textureName;
+            aimaterial->GetTexture(aiTextureType_SPECULAR, i, &textureName);
+            sprintf(buff, "%s/%s", m_strPath.c_str(), textureName.C_Str());
 
-    return model;
+            ShaderParameterValue value;
+            value.texture = Texture::createFromFile(buff);
+            material->addValue("texture_specular0", ShaderParameterType::TEXTURE, value);
+        }
+    }
+
+    // return model;
+    return NULL;
 }
 
 Model* Model::createModel(std::string path)
 {
     Model* model = new Model(path);
     return model;
+}
+
+void Model::update()
+{
+    GameObject::update();
+
+    // if (transform != NULL) {
+    //     float off = 1.0f;
+    //     float y = transform->getRotateY();
+    //     if (y + off >= 360.0f) {
+    //         transform->setRotateY(0.0f);
+    //     } else {
+    //         transform->setRotateY(y + off);
+    //     }
+    // }
 }

@@ -20,6 +20,9 @@ namespace ZH
 
             static Model* createModel(std::string path);
         
+        protected:
+            virtual void update();
+        
         private:
             void processNode(aiNode* node, const aiScene *scene);
             Model* processMesh(aiMesh* mesh,  const aiScene *scene);

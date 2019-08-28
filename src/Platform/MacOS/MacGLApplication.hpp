@@ -1,4 +1,5 @@
 #pragma once
+#include <ctime>
 #include "GL/GLApplication.hpp"
 
 namespace ZH
@@ -13,5 +14,9 @@ namespace ZH
 
         protected:
             virtual void OnDraw();
+
+        private:
+            size_t m_preFrameTime;
+
     };
 }

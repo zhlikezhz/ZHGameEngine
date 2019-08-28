@@ -24,7 +24,7 @@ Transform::~Transform()
 
 void Transform::setX(float x)
 {
-    if (m_vec3Position.x != 0) {
+    if (m_vec3Position.x != x) {
         m_vec3Position.x = x;
         setDirty(true);
     }
@@ -32,7 +32,7 @@ void Transform::setX(float x)
 
 void Transform::setY(float y)
 {
-    if (m_vec3Position.y != 0) {
+    if (m_vec3Position.y != y) {
         m_vec3Position.y = y;
         setDirty(true);
     }
@@ -40,7 +40,7 @@ void Transform::setY(float y)
 
 void Transform::setZ(float z)
 {
-    if (m_vec3Position.z != 0) {
+    if (m_vec3Position.z != z) {
         m_vec3Position.z = z;
         setDirty(true);
     }

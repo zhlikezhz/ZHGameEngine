@@ -26,6 +26,7 @@ namespace ZH
             unsigned int m_uiUVVBO;
             unsigned int m_uiPointVBO;
             unsigned int m_uiNormalVBO;
+            unsigned int m_uiIndexEBO;
             ShaderParameter2ID m_mTextureIDs;
     };
 }

@@ -61,3 +61,18 @@ void Mesh::addNormals(std::vector<glm::vec3>& normals)
         m_vNormals.push_back(*iter);
     }
 }
+
+void Mesh::addIndex(unsigned int index)
+{
+    setDirty(true);
+    m_uiIndices.push_back(index);
+}
+
+void Mesh::addIndices(std::vector<unsigned int>& indices)
+{
+    setDirty(true);
+    std::vector<unsigned int>::iterator iter = indices.begin();
+    for (; iter != indices.end(); iter++) {
+        m_uiIndices.push_back(*iter);
+    }
+}

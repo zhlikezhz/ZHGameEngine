@@ -23,9 +23,13 @@ namespace ZH
             void addNormal(glm::vec3);
             void addNormals(std::vector<glm::vec3>&);
 
+            void addIndex(unsigned int index);
+            void addIndices(std::vector<unsigned int>&);
+
             inline std::vector<glm::vec2>& getUV() {return m_vUVs;}
             inline std::vector<glm::vec3>& getPoints() {return m_vPoints;}
             inline std::vector<glm::vec3>& getNormals() {return m_vNormals;}
+            inline std::vector<unsigned int>& getIndices() {return m_uiIndices;}
 
             inline bool isDirty() { return m_bDirty;}
             inline void setDirty(bool dirty) { m_bDirty = dirty; }
@@ -36,5 +40,6 @@ namespace ZH
             std::vector<glm::vec2> m_vUVs;
             std::vector<glm::vec3> m_vPoints;
             std::vector<glm::vec3> m_vNormals;
+            std::vector<unsigned int> m_uiIndices;
     };
 }

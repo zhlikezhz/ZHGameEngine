@@ -17,6 +17,7 @@ GLRender::GLRender()
     m_uiUVVBO = 0;
     m_uiPointVBO = 0;
     m_uiNormalVBO = 0;
+    m_uiIndexEBO = 0;
 }
 
 GLRender::~GLRender()
@@ -26,10 +27,9 @@ GLRender::~GLRender()
 
 void GLRender::preproccessing()
 {
+    Camera* camera = m_pObject->getCamera();
     Mesh* mesh = (Mesh*)m_pObject->getComponent("Mesh");
     Material* material = (Material*)m_pObject->getComponent("Material");
-    GLShader* shader = (GLShader*)material->getShader();
-    Camera* camera = m_pObject->getCamera();
     Transform* transform = (Transform*)m_pObject->getComponent("Transform");
 
     if (mesh != nullptr && mesh->isDirty()) {
@@ -45,14 +45,19 @@ void GLRender::preproccessing()
         if (m_uiNormalVBO != 0) {
             glDeleteBuffers(1, &m_uiNormalVBO);
         }
+        if (m_uiIndexEBO != 0) {
+            glDeleteBuffers(1, &m_uiIndexEBO);
+        }
 
         std::vector<glm::vec3> points = mesh->getPoints();
         std::vector<glm::vec3> normals = mesh->getNormals();
         std::vector<glm::vec2> uvs = mesh->getUV();
+        std::vector<unsigned int> indices = mesh->getIndices();
 
         glGenVertexArrays(1, &m_uiVAO);
         glGenBuffers(1, &m_uiPointVBO);
         glGenBuffers(1, &m_uiUVVBO);
+        glGenBuffers(1, &m_uiIndexEBO);
 
         if (points.size() > 0) {
             glBindVertexArray(m_uiVAO);
@@ -60,6 +65,11 @@ void GLRender::preproccessing()
             glBufferData(GL_ARRAY_BUFFER, points.size() * sizeof(glm::vec3), &points[0], GL_STATIC_DRAW);
             glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
             glEnableVertexAttribArray(0);
+        }
+
+        if (indices.size() > 0) {
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_uiIndexEBO);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
         }
 
         if (uvs.size() > 0) {
@@ -81,7 +91,12 @@ void GLRender::preproccessing()
         mesh->setDirty(false);
     }
 
-    if (shader != nullptr && material != nullptr && material->isDirty()) {
+    if (material != nullptr && material->isDirty()) {
+        GLShader* shader = (GLShader*)material->getShader();
+        if (shader == nullptr) {
+            return;
+        }
+
         for (ShaderParameter2ID::const_iterator iter = m_mTextureIDs.cbegin(); iter != m_mTextureIDs.cend(); iter++) {
             glDeleteTextures(1, &iter->second);
         }
@@ -106,7 +121,7 @@ void GLRender::preproccessing()
                 int width = texture->getWidth();
                 int height = texture->getHeight();
                 const unsigned char* data = texture->getTextureData();
-                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
                 glGenerateMipmap(GL_TEXTURE_2D);
 
                 m_mTextureIDs.insert(ShaderParameter2ID::value_type(iter->name, textureID));
@@ -117,80 +132,82 @@ void GLRender::preproccessing()
         material->setDirty(false);
     }
 
-    if (material != nullptr && camera != nullptr && camera->isDirty()) {
-        ShaderParameterValue viewParameter;
-        viewParameter.mat4x4 = camera->getViewMatrix();
-        material->addValue("view", ShaderParameterType::MATRIX4, viewParameter);
+    ShaderParameterValue viewParameter;
+    viewParameter.mat4x4 = camera->getViewMatrix();
+    material->addValue("view", ShaderParameterType::MATRIX4, viewParameter);
 
-        ShaderParameterValue modelParameter;
-        modelParameter.mat4x4 = transform->getModelMatrix();
-        material->addValue("model", ShaderParameterType::MATRIX4, modelParameter);
+    ShaderParameterValue projectionParameter;
+    projectionParameter.mat4x4 = glm::perspective(glm::radians(camera->getFOV()), 1.0f, camera->getFarPanel(), camera->getNearPanel());
+    material->addValue("projection", ShaderParameterType::MATRIX4, projectionParameter);
 
-        ShaderParameterValue projectionParameter;
-        projectionParameter.mat4x4 = glm::perspective(glm::radians(camera->getFOV()), 1.0f, camera->getFarPanel(), camera->getNearPanel());
-        material->addValue("projection", ShaderParameterType::MATRIX4, projectionParameter);
-
-        camera->setDirty(false);
-    }
+    ShaderParameterValue modelParameter;
+    modelParameter.mat4x4 = transform->getModelMatrix();
+    material->addValue("model", ShaderParameterType::MATRIX4, modelParameter);
 }
 
 void GLRender::render()
 {
-    Mesh* mesh = (Mesh*)m_pObject->getComponent("Mesh");
     Material* material = (Material*)m_pObject->getComponent("Material");
+    if (material == nullptr) {
+        return;
+    }
     GLShader* shader = (GLShader*)material->getShader();
-    if (shader != nullptr) {
-        if (mesh != nullptr) {
-            glEnable(GL_DEPTH_TEST);
-            preproccessing();
+    if (shader == nullptr) {
+        return;
+    }
 
-            if (material != nullptr) {
-                int count = 0;
-                const ShaderParameterList shaderParameters = material->getShaderParameters();
-                for (ShaderParameterList::const_iterator iter = shaderParameters.cbegin(); iter != shaderParameters.cend(); iter++) {
-                    if (iter->type == ShaderParameterType::TEXTURE) {
-                        if (count == 0) {
-                            glActiveTexture(GL_TEXTURE0);
-                        } else if (count == 1) {
-                            glActiveTexture(GL_TEXTURE1);
-                        } else if (count == 2) {
-                            glActiveTexture(GL_TEXTURE2);
-                        } else if (count == 3) {
-                            glActiveTexture(GL_TEXTURE3);
-                        } else if (count == 4) {
-                            glActiveTexture(GL_TEXTURE4);
-                        }
-                        glBindTexture(GL_TEXTURE_2D, m_mTextureIDs[iter->name]);
-                        count++;
-                    }
+    Mesh* mesh = (Mesh*)m_pObject->getComponent("Mesh");
+    if (mesh == nullptr) {
+        return;
+    }
+
+    preproccessing();
+
+    if (material != nullptr) {
+        int count = 0;
+        const ShaderParameterList shaderParameters = material->getShaderParameters();
+        for (ShaderParameterList::const_iterator iter = shaderParameters.cbegin(); iter != shaderParameters.cend(); iter++) {
+            if (iter->type == ShaderParameterType::TEXTURE) {
+                if (count == 0) {
+                    glActiveTexture(GL_TEXTURE0);
+                } else if (count == 1) {
+                    glActiveTexture(GL_TEXTURE1);
+                } else if (count == 2) {
+                    glActiveTexture(GL_TEXTURE2);
+                } else if (count == 3) {
+                    glActiveTexture(GL_TEXTURE3);
+                } else if (count == 4) {
+                    glActiveTexture(GL_TEXTURE4);
                 }
+                glBindTexture(GL_TEXTURE_2D, m_mTextureIDs[iter->name]);
+                count++;
             }
-
-            shader->use();
-            if (material != nullptr) {
-                const ShaderParameterList shaderParameters = material->getShaderParameters();
-                for (ShaderParameterList::const_iterator iter = shaderParameters.cbegin(); iter != shaderParameters.cend(); iter++) {
-                    if (iter->type == ShaderParameterType::BOOL) {
-                        shader->setBool(iter->name, iter->value.valb);
-                    } else if (iter->type == ShaderParameterType::INT) {
-                        shader->setInt(iter->name, iter->value.vali);
-                    } else if (iter->type == ShaderParameterType::UINT) {
-                        shader->setUInt(iter->name, iter->value.valui);
-                    } else if (iter->type == ShaderParameterType::FLOAT) {
-                        shader->setFloat(iter->name, iter->value.valf);
-                    } else if (iter->type == ShaderParameterType::VECTOR3F) {
-                        shader->set3Float(iter->name, iter->value.val3f[0], iter->value.val3f[1], iter->value.val3f[2]);
-                    } else if (iter->type == ShaderParameterType::MATRIX4) {
-                        shader->setMat4(iter->name, iter->value.mat4x4);
-                    }
-                }
-            }
-            glBindVertexArray(m_uiVAO);
-
-            int num = mesh->getPointNumber();
-            glDrawArrays(GL_TRIANGLES, 0, num);
         }
     }
+
+    shader->use();
+    if (material != nullptr) {
+        const ShaderParameterList shaderParameters = material->getShaderParameters();
+        for (ShaderParameterList::const_iterator iter = shaderParameters.cbegin(); iter != shaderParameters.cend(); iter++) {
+            if (iter->type == ShaderParameterType::BOOL) {
+                shader->setBool(iter->name, iter->value.valb);
+            } else if (iter->type == ShaderParameterType::INT) {
+                shader->setInt(iter->name, iter->value.vali);
+            } else if (iter->type == ShaderParameterType::UINT) {
+                shader->setUInt(iter->name, iter->value.valui);
+            } else if (iter->type == ShaderParameterType::FLOAT) {
+                shader->setFloat(iter->name, iter->value.valf);
+            } else if (iter->type == ShaderParameterType::VECTOR3F) {
+                shader->set3Float(iter->name, iter->value.val3f[0], iter->value.val3f[1], iter->value.val3f[2]);
+            } else if (iter->type == ShaderParameterType::MATRIX4) {
+                shader->setMat4(iter->name, iter->value.mat4x4);
+            }
+        }
+    }
+    glBindVertexArray(m_uiVAO);
+    int num = mesh->getPointNumber();
+    glDrawElements(GL_TRIANGLES, num, GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
 }
 
 void GLRender::update(float delay)
