@@ -1,0 +1,7 @@
+
+namespace SpriteRenderer
+{
+	class SpriteRenderer
+	{
+	};
+}

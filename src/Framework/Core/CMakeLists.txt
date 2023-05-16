@@ -1,0 +1,9 @@
+add_library(Core
+Shader.cpp
+Render.cpp
+Texture.cpp
+Material.cpp
+AssimpData.cpp
+BaseApplication.cpp
+GraphicEngine.cpp
+)

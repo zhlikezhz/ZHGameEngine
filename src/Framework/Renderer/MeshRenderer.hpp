@@ -1,0 +1,8 @@
+
+namespace UpPower
+{
+	class MeshRenderer
+	{
+
+	};
+}
